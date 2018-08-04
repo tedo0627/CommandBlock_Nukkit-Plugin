@@ -73,13 +73,13 @@ public class BlockEntityCommandBlock extends BlockEntitySpawnable implements Com
 	}
 
 	@Override
-    public void saveNBT() {
-        this.namedTag.putString("id", "CommandBlock");
-        this.namedTag.putInt("x", (int) this.getX());
-        this.namedTag.putInt("y", (int) this.getY());
-        this.namedTag.putInt("z", (int) this.getZ());
-        this.namedTag.putBoolean("isMovable", this.movable);
-    }
+	public void saveNBT() {
+	    this.namedTag.putString("id", "CommandBlock");
+		this.namedTag.putInt("x", (int) this.getX());
+		this.namedTag.putInt("y", (int) this.getY());
+		this.namedTag.putInt("z", (int) this.getZ());
+		this.namedTag.putBoolean("isMovable", this.movable);
+	}
 
 	@Override
 	public boolean isBlockEntityValid() {
@@ -119,17 +119,17 @@ public class BlockEntityCommandBlock extends BlockEntitySpawnable implements Com
 
 
 
-    public boolean isNormal() {
-    	return this.getMode() == TYPE_NORMAL;
-    }
+	public boolean isNormal() {
+		return this.getMode() == TYPE_NORMAL;
+	}
 
-    public boolean isRepeating() {
-    	return this.getMode() == TYPE_REPEATING;
-    }
+	public boolean isRepeating() {
+		return this.getMode() == TYPE_REPEATING;
+	}
 
-    public boolean isChain() {
-    	return this.getMode() == TYPE_CHAIN;
-    }
+	public boolean isChain() {
+		return this.getMode() == TYPE_CHAIN;
+	}
 
 
 
@@ -192,153 +192,153 @@ public class BlockEntityCommandBlock extends BlockEntitySpawnable implements Com
 
 
 
-    public void setName(String name) {
-    	this.namedTag.putString("CustomName", name);
-    }
+	public void setName(String name) {
+		this.namedTag.putString("CustomName", name);
+	}
 
-    public String getName() {
-    	return this.namedTag.getString("CustomName").equals("") ? "CommandBlock" : this.namedTag.getString("CustomName");
-    }
-
-
-
-    public void setMode(int mode) {
-    	this.namedTag.putInt("commandBlockMode", mode);
-    }
-
-    public int getMode() {
-    	return this.namedTag.getInt("commandBlockMode");
-    }
+	public String getName() {
+		return this.namedTag.getString("CustomName").equals("") ? "CommandBlock" : this.namedTag.getString("CustomName");
+	}
 
 
 
-    public void setCommand(String command) {
-    	this.namedTag.putString("Command", command);
-    }
+	public void setMode(int mode) {
+		this.namedTag.putInt("commandBlockMode", mode);
+	}
 
-    public String getCommand() {
-    	return this.namedTag.getString("Command");
-    }
-
-
-
-    public void setLastOutPut(String log) {
-    	this.namedTag.putString("LastOutput", log);
-    }
-
-    public String getLastOutPut() {
-    	return this.namedTag.getString("LastOutput");
-    }
+	public int getMode() {
+		return this.namedTag.getInt("commandBlockMode");
+	}
 
 
 
-    public void setPower(boolean power) {
-    	this.namedTag.putBoolean("powered", power);
-    }
+	public void setCommand(String command) {
+		this.namedTag.putString("Command", command);
+	}
 
-    public boolean getPower() {
-    	return this.namedTag.getBoolean("powered");
-    }
-
-
-
-    public void setAuto(boolean auto) {
-    	this.namedTag.putBoolean("auto", auto);
-    }
-
-    public boolean getAuto() {
-    	return this.namedTag.getBoolean("auto");
-    }
+	public String getCommand() {
+		return this.namedTag.getString("Command");
+	}
 
 
 
-    public void setConditions(boolean condition) {
-    	this.namedTag.putBoolean("conditionalMode", condition);
-    }
+	public void setLastOutPut(String log) {
+		this.namedTag.putString("LastOutput", log);
+	}
 
-    public boolean getConditions() {
-    	return this.namedTag.getBoolean("conditionalMode");
-    }
-
-
+	public String getLastOutPut() {
+		return this.namedTag.getString("LastOutput");
+	}
 
 
-    @Override
-    public boolean isPermissionSet(String name) {
-        return this.perm.isPermissionSet(name);
-    }
 
-    @Override
-    public boolean isPermissionSet(Permission permission) {
-        return this.perm.isPermissionSet(permission);
-    }
+	public void setPower(boolean power) {
+		this.namedTag.putBoolean("powered", power);
+	}
 
-    @Override
-    public boolean hasPermission(String name) {
-        return this.perm.hasPermission(name);
-        }
+	public boolean getPower() {
+		return this.namedTag.getBoolean("powered");
+	}
 
-    @Override
-    public boolean hasPermission(Permission permission) {
-        return this.perm.hasPermission(name);
-    }
 
-    @Override
-    public PermissionAttachment addAttachment(Plugin plugin) {
-        return this.perm.addAttachment(plugin);
-    }
 
-    @Override
-    public PermissionAttachment addAttachment(Plugin plugin, String name) {
-        return this.perm.addAttachment(plugin, name);
-    }
+	public void setAuto(boolean auto) {
+		this.namedTag.putBoolean("auto", auto);
+	}
 
-    @Override
-    public PermissionAttachment addAttachment(Plugin plugin, String name, Boolean value) {
-        return this.perm.addAttachment(plugin, name, value);
-    }
+	public boolean getAuto() {
+		return this.namedTag.getBoolean("auto");
+	}
 
-    @Override
-    public void removeAttachment(PermissionAttachment attachment) {
-        this.perm.removeAttachment(attachment);
-    }
 
-    @Override
-    public void recalculatePermissions() {
-        this.perm.recalculatePermissions();
-    }
 
-    @Override
-    public Map<String, PermissionAttachmentInfo> getEffectivePermissions() {
-        return this.perm.getEffectivePermissions();
-    }
+	public void setConditions(boolean condition) {
+		this.namedTag.putBoolean("conditionalMode", condition);
+	}
 
-    @Override
-    public boolean isOp() {
-        return true;
-    }
+	public boolean getConditions() {
+		return this.namedTag.getBoolean("conditionalMode");
+	}
 
-    @Override
-    public void setOp(boolean value) {
-    }
 
-    @Override
-    public void sendMessage(String message) {
-        this.setLastOutPut(message);
-    }
 
-    @Override
-    public void sendMessage(TextContainer message) {
-        this.setLastOutPut(this.getServer().getLanguage().translate(message));
-    }
 
-    @Override
-    public Server getServer() {
-        return Server.getInstance();
-    }
+	@Override
+	public boolean isPermissionSet(String name) {
+		return this.perm.isPermissionSet(name);
+	}
 
-    @Override
-    public boolean isPlayer() {
-        return false;
-    }
+	@Override
+	public boolean isPermissionSet(Permission permission) {
+		return this.perm.isPermissionSet(permission);
+	}
+
+	@Override
+	public boolean hasPermission(String name) {
+		return this.perm.hasPermission(name);
+	}
+
+	@Override
+	public boolean hasPermission(Permission permission) {
+		return this.perm.hasPermission(name);
+	}
+
+	@Override
+	public PermissionAttachment addAttachment(Plugin plugin) {
+		return this.perm.addAttachment(plugin);
+	}
+
+	@Override
+	public PermissionAttachment addAttachment(Plugin plugin, String name) {
+		return this.perm.addAttachment(plugin, name);
+	}
+
+	@Override
+	public PermissionAttachment addAttachment(Plugin plugin, String name, Boolean value) {
+		return this.perm.addAttachment(plugin, name, value);
+	}
+
+	@Override
+	public void removeAttachment(PermissionAttachment attachment) {
+		this.perm.removeAttachment(attachment);
+	}
+
+	@Override
+	public void recalculatePermissions() {
+		this.perm.recalculatePermissions();
+	}
+
+	@Override
+	public Map<String, PermissionAttachmentInfo> getEffectivePermissions() {
+		return this.perm.getEffectivePermissions();
+	}
+
+	@Override
+	public boolean isOp() {
+		return true;
+	}
+
+	@Override
+	public void setOp(boolean value) {
+	}
+
+	@Override
+	public void sendMessage(String message) {
+		this.setLastOutPut(message);
+	}
+
+	@Override
+	public void sendMessage(TextContainer message) {
+		this.setLastOutPut(this.getServer().getLanguage().translate(message));
+	}
+
+	@Override
+	public Server getServer() {
+		return Server.getInstance();
+	}
+
+	@Override
+	public boolean isPlayer() {
+		return false;
+	}
 }

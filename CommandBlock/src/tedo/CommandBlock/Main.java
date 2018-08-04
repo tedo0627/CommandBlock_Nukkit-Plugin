@@ -41,56 +41,56 @@ public class Main extends PluginBase implements Listener {
 		int[] a = new int[]{137, 188, 189};
 
 		for (int id : a) {
-            Class c = Block.list[id];
-            if (c != null) {
-                Block block;
-                try {
-                    block = (Block) c.newInstance();
-                    try {
-                        Constructor constructor = c.getDeclaredConstructor(int.class);
-                        constructor.setAccessible(true);
-                        for (int data = 0; data < 16; ++data) {
-                        	Block.fullList[(id << 4) | data] = (Block) constructor.newInstance(data);
-                        }
-                        Block.hasMeta[id] = true;
-                    } catch (NoSuchMethodException ignore) {
-                        for (int data = 0; data < 16; ++data) {
-                        	Block.fullList[(id << 4) | data] = block;
-                        }
-                    }
-                } catch (Exception e) {
-                    Server.getInstance().getLogger().error("Error while registering " + c.getName(), e);
-                    for (int data = 0; data < 16; ++data) {
-                    	Block.fullList[(id << 4) | data] = new BlockUnknown(id, data);
-                    }
-                    return;
-                }
+			Class c = Block.list[id];
+			if (c != null) {
+				Block block;
+				try {
+					block = (Block) c.newInstance();
+					try {
+						Constructor constructor = c.getDeclaredConstructor(int.class);
+						constructor.setAccessible(true);
+						for (int data = 0; data < 16; ++data) {
+							Block.fullList[(id << 4) | data] = (Block) constructor.newInstance(data);
+						}
+						Block.hasMeta[id] = true;
+					} catch (NoSuchMethodException ignore) {
+						for (int data = 0; data < 16; ++data) {
+							Block.fullList[(id << 4) | data] = block;
+						}
+					}
+				} catch (Exception e) {
+					Server.getInstance().getLogger().error("Error while registering " + c.getName(), e);
+					for (int data = 0; data < 16; ++data) {
+						Block.fullList[(id << 4) | data] = new BlockUnknown(id, data);
+					}
+					return;
+				}
 
-                Block.solid[id] = block.isSolid();
-                Block.transparent[id] = block.isTransparent();
-                Block.hardness[id] = block.getHardness();
-                Block.light[id] = block.getLightLevel();
+				Block.solid[id] = block.isSolid();
+				Block.transparent[id] = block.isTransparent();
+				Block.hardness[id] = block.getHardness();
+				Block.light[id] = block.getLightLevel();
 
-                if (block.isSolid()) {
-                    if (block.isTransparent()) {
-                        if (block instanceof BlockLiquid || block instanceof BlockIce) {
-                        	Block.lightFilter[id] = 2;
-                        } else {
-                        	Block.lightFilter[id] = 1;
-                        }
-                    } else {
-                    	Block.lightFilter[id] = 15;
-                    }
-                } else {
-                	Block.lightFilter[id] = 1;
-                }
-            } else {
-            	Block.lightFilter[id] = 1;
-                for (int data = 0; data < 16; ++data) {
-                	Block.fullList[(id << 4) | data] = new BlockUnknown(id, data);
-                }
-            }
-        }
+				if (block.isSolid()) {
+					if (block.isTransparent()) {
+						if (block instanceof BlockLiquid || block instanceof BlockIce) {
+							Block.lightFilter[id] = 2;
+						} else {
+							Block.lightFilter[id] = 1;
+						}
+					} else {
+						Block.lightFilter[id] = 15;
+					}
+				} else {
+					Block.lightFilter[id] = 1;
+				}
+			} else {
+				Block.lightFilter[id] = 1;
+				for (int data = 0; data < 16; ++data) {
+					Block.fullList[(id << 4) | data] = new BlockUnknown(id, data);
+				}
+			}
+		}
 	}
 
 	@EventHandler
@@ -99,54 +99,53 @@ public class Main extends PluginBase implements Listener {
 			return;
 		}
 		Player player = event.getPlayer();
-        if (!(player.isOp() && player.isCreative())) {
-            return;
-        }
-        CommandBlockUpdatePacket pk = (CommandBlockUpdatePacket) event.getPacket();
-        if (pk.isBlock) {
-            Vector3 pos = new Vector3(pk.x, pk.y, pk.z);
-            Block block = player.level.getBlock(pos);
-            if (block instanceof BlockCommandBlock) {
-                BlockEntityCommandBlock blockEntity = ((BlockCommandBlock) block).getBlockEntity();
-                if (blockEntity == null) {
-                    return;
-                }
-                Block place = Block.get(137);
-                switch (pk.commandBlockMode) {
-                    case 0:
-                        place = Block.get(137);
-                        place.setDamage(block.getDamage());
-                        break;
-                    case 1:
-                        place = Block.get(188);
-                        place.setDamage(block.getDamage());
-                        break;
-                    case 2:
-                        place = Block.get(189);
-                        place.setDamage(block.getDamage());
-                        break;
-                }
-                if (pk.isConditional) {
-                    if (place.getDamage() < 8) {
-                        place.setDamage(place.getDamage() + 8);
-                    }
-                } else {
-                    if (place.getDamage() > 8) {
-                        place.setDamage(place.getDamage() - 8);
-                    }
-                }
-                player.level.setBlock(pos, place, false, false);
-                //blockEntity = (BlockEntityCommandBlock) blockEntity.clone();
-                blockEntity.setName(pk.name);
-                blockEntity.setMode(pk.commandBlockMode);
-                blockEntity.setCommand(pk.command);
-                blockEntity.setLastOutPut(pk.lastOutput);
-                blockEntity.setAuto(!pk.isRedstoneMode);
-                blockEntity.setConditions(pk.isConditional);
-                blockEntity.spawnToAll();
-            }
-        } else {
-            //MinercartCommandBlock
-        }
+		if (!(player.isOp() && player.isCreative())) {
+			return;
+		}
+		CommandBlockUpdatePacket pk = (CommandBlockUpdatePacket) event.getPacket();
+		if (pk.isBlock) {
+			Vector3 pos = new Vector3(pk.x, pk.y, pk.z);
+			Block block = player.level.getBlock(pos);
+			if (block instanceof BlockCommandBlock) {
+				BlockEntityCommandBlock blockEntity = ((BlockCommandBlock) block).getBlockEntity();
+				if (blockEntity == null) {
+					return;
+				}
+				Block place = Block.get(137);
+				switch (pk.commandBlockMode) {
+					case 0:
+						place = Block.get(137);
+						place.setDamage(block.getDamage());
+						break;
+					case 1:
+						place = Block.get(188);
+						place.setDamage(block.getDamage());
+						break;
+					case 2:
+						place = Block.get(189);
+						place.setDamage(block.getDamage());
+						break;
+				}
+				if (pk.isConditional) {
+					if (place.getDamage() < 8) {
+						place.setDamage(place.getDamage() + 8);
+					}
+				} else {
+					if (place.getDamage() > 8) {
+						place.setDamage(place.getDamage() - 8);
+					}
+				}
+				player.level.setBlock(pos, place, false, false);
+				blockEntity.setName(pk.name);
+				blockEntity.setMode(pk.commandBlockMode);
+				blockEntity.setCommand(pk.command);
+				blockEntity.setLastOutPut(pk.lastOutput);
+				blockEntity.setAuto(!pk.isRedstoneMode);
+				blockEntity.setConditions(pk.isConditional);
+				blockEntity.spawnToAll();
+			}
+		} else {
+			//MinercartCommandBlock
+		}
 	}
 }
