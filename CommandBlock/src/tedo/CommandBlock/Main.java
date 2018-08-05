@@ -1,6 +1,7 @@
 package tedo.CommandBlock;
 
 import java.lang.reflect.Constructor;
+import java.util.ArrayList;
 
 import cn.nukkit.Player;
 import cn.nukkit.Server;
@@ -9,20 +10,33 @@ import cn.nukkit.block.BlockIce;
 import cn.nukkit.block.BlockLiquid;
 import cn.nukkit.block.BlockUnknown;
 import cn.nukkit.blockentity.BlockEntity;
+import cn.nukkit.command.Command;
+import cn.nukkit.command.CommandSender;
 import cn.nukkit.event.EventHandler;
 import cn.nukkit.event.Listener;
 import cn.nukkit.event.server.DataPacketReceiveEvent;
 import cn.nukkit.item.Item;
+import cn.nukkit.lang.TranslationContainer;
 import cn.nukkit.math.Vector3;
 import cn.nukkit.network.protocol.CommandBlockUpdatePacket;
 import cn.nukkit.network.protocol.ProtocolInfo;
 import cn.nukkit.plugin.PluginBase;
+import cn.nukkit.utils.MainLogger;
+import cn.nukkit.utils.TextFormat;
+import cn.nukkit.utils.Utils;
 
 public class Main extends PluginBase implements Listener {
+
+	private static Main instance;
+
+	public static Main getInstance() {
+		return Main.instance;
+	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	public void onEnable() {
+		Main.instance = this;
 
 		this.getServer().getPluginManager().registerEvents(this, this);
 
@@ -147,5 +161,69 @@ public class Main extends PluginBase implements Listener {
 		} else {
 			//MinercartCommandBlock
 		}
+	}
+
+	public boolean dispatchCommand(CommandSender sender, String commandLine) {
+		ArrayList<String> parsed = parseArguments(commandLine);
+		if (parsed.size() == 0) {
+			return false;
+		}
+
+		String sentCommandLabel = parsed.remove(0).toLowerCase();
+		String[] args = parsed.toArray(new String[parsed.size()]);
+		Command target = this.getServer().getCommandMap().getCommand(sentCommandLabel);
+
+		if (target == null) {
+			sender.sendMessage(new TranslationContainer(TextFormat.RED + "%commands.generic.unknown", commandLine));
+			return false;
+		}
+
+		boolean r = false;
+		target.timing.startTiming();
+		try {
+			r = target.execute(sender, sentCommandLabel, args);
+		} catch (Exception e) {
+			sender.sendMessage(new TranslationContainer(TextFormat.RED + "%commands.generic.exception"));
+			this.getServer().getLogger().critical(this.getServer().getLanguage().translateString("nukkit.command.exception", commandLine, target.toString(), Utils.getExceptionMessage(e)));
+			MainLogger logger = sender.getServer().getLogger();
+			if (logger != null) {
+				logger.logException(e);
+			}
+		}
+		target.timing.stopTiming();
+
+		return r;
+	}
+
+	private ArrayList<String> parseArguments(String cmdLine) {
+		StringBuilder sb = new StringBuilder(cmdLine);
+		ArrayList<String> args = new ArrayList<>();
+		boolean notQuoted = true;
+		int start = 0;
+
+		for (int i = 0; i < sb.length(); i++) {
+			if (sb.charAt(i) == '\\') {
+				sb.deleteCharAt(i);
+				continue;
+			}
+
+			if (sb.charAt(i) == ' ' && notQuoted) {
+				String arg = sb.substring(start, i);
+				if (!arg.isEmpty()) {
+					args.add(arg);
+				}
+				start = i + 1;
+			} else if (sb.charAt(i) == '"') {
+				sb.deleteCharAt(i);
+				--i;
+				notQuoted = !notQuoted;
+			}
+		}
+
+		String arg = sb.substring(start);
+		if (!arg.isEmpty()) {
+		    args.add(arg);
+		}
+		return args;
 	}
 }

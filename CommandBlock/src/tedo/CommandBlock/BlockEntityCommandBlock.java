@@ -170,11 +170,19 @@ public class BlockEntityCommandBlock extends BlockEntitySpawnable implements Com
     }
 
 	public void useCommand() {
-		boolean check = this.getServer().dispatchCommand(this, this.getCommand());
+		boolean check = Main.getInstance().dispatchCommand(this, this.getCommand());
 		Block block = getBlock();
-		Block commandBlock = block.getSide(BlockFace.fromIndex(block.getDamage()));
+		int meta = block.getDamage();
+		if (meta > 8) {
+			meta -= 8;
+		}
+		Block commandBlock = block.getSide(BlockFace.fromIndex(meta));
 		if (commandBlock instanceof BlockCommandBlockChain) {
-			if (block.getDamage() != commandBlock.getDamage()) {
+			int cmeta = commandBlock.getDamage();
+			if (cmeta > 8) {
+				cmeta -= 8;
+			}
+			if (meta != cmeta) {
 				return;
 			}
 			BlockEntityCommandBlock blockEntity = ((BlockCommandBlockChain) commandBlock).getBlockEntity();
